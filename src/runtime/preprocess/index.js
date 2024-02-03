@@ -1,11 +1,11 @@
 import handleImports from "./handleImports.js";
 import removeComments from "./removeComments.js";
 
-let preprocess = (source) => {
-    source = removeComments(source)
-    source = handleImports(source)
+const preprocess = (source) => {
+	let newSource = removeComments(source);
+	newSource = handleImports(newSource);
 
-    return source;
-}
+	return newSource;
+};
 
 export default preprocess;

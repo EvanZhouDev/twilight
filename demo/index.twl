@@ -1,4 +1,4 @@
-import ./functions.twl
+import ./demo/functions.twl
 
 # Twilight supports functions of any complexity through De Brujin Indexing: Even this pair-based predecessor function implementation!
 
@@ -19,4 +19,4 @@ R = λr n.Z n 1 (Z (P n) 1 ((r (P n)) S (r (P (P n)))))
 fib = λn.Y R n
 
 # and call...
-fib 1
+fib 3

@@ -5,5 +5,14 @@
 	"imports": {
 		"#src/*": "./src/*",
 		"#parser/*": "./src/parser/*"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.5.3"
+	},
+	"scripts": {
+		"format": "biome format . --write",
+		"lint": "biome lint .",
+		"fix": "biome check --apply .",
+		"fix-unsafe": "biome check --apply-unsafe ."
 	}
 }
