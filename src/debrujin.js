@@ -92,13 +92,19 @@ export let betaReduce = (node) => {
 
 export function injectEnv(node, env) {
     if (node instanceof Variable) {
-        if (env[node.name]) {
-            return env[node.name]
+        if (env.static[node.name]) {
+            return env.static[node.name];
         } else {
-            return new Variable(node.name)
+            for (let regexKey in env.dynamic) {
+                if (new RegExp(regexKey, 'g').test(node.name)) {
+                    return env.dynamic[regexKey](node.name)
+                }
+            }
+            // check each env
+            return new Variable(node.name);
         }
     } else if (node instanceof Abstraction) {
-        // ensure that the env varaibles aren't in binders
+        // ensure that the env variables aren't in binders
         return new Abstraction(node.binders, injectEnv(node.expression, env));
     } else if (node instanceof Application) {
         return new Application(injectEnv(node.leftExpression, env), injectEnv(node.rightExpression, env));
