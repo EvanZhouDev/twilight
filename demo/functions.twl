@@ -1,0 +1,5 @@
+import booleans numerals
+
+# Define basic functions, like "not" and the successor
+¬ = λx.x F T
+S = (λw y x.y (w y x))
