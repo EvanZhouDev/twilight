@@ -42,4 +42,4 @@ class Assignment {
     }
 }
 
-export { Abstraction, Application, Variable, Assignment };
+export default { Abstraction, Application, Variable, Assignment };

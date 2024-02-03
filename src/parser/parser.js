@@ -1,5 +1,5 @@
 import Token from "./token.js"
-import { Abstraction, Application, Variable, Assignment } from "./ast.js"
+import AST from "./ast.js"
 
 export default class Parser {
     constructor(lexer) {
@@ -43,7 +43,7 @@ export default class Parser {
         this.match(Token.VAR);
         this.match(Token.EQUALS);
         const expr = this.expression();
-        return new Assignment(name, expr);
+        return new AST.Assignment(name, expr);
     }
 
     expression() {
@@ -56,7 +56,7 @@ export default class Parser {
 
             const expr = this.expression();
 
-            return new Abstraction(binders, expr);
+            return new AST.Abstraction(binders, expr);
         } else {
             return this.application();
         }
@@ -66,7 +66,7 @@ export default class Parser {
         if (this.lookahead.type === Token.VAR) {
             const name = this.lookahead.value;
             this.match(Token.VAR);
-            return new Variable(name);
+            return new AST.Variable(name);
         } else if (this.lookahead.type === Token.LPAREN) {
             this.match(Token.LPAREN);
             const expr = this.expression();
@@ -83,7 +83,7 @@ export default class Parser {
             this.lookahead.type === Token.VAR ||
             this.lookahead.type === Token.LPAREN
         ) {
-            expression = new Application(expression, this.atom());
+            expression = new AST.Application(expression, this.atom());
         }
         return expression;
     }

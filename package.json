@@ -1,5 +1,9 @@
 {
 	"name": "twilight",
 	"module": "index.js",
-	"type": "module"
+	"type": "module",
+	"imports": {
+		"#src/*": "./src/*",
+		"#parser/*": "./src/parser/*"
+	}
 }
