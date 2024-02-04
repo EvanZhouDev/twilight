@@ -1,23 +1,30 @@
 import fs from "fs";
 import run from "../index.js";
 import stdlib from "../stdlib.js";
+import path from "path";
 
-const handleImports = (source) => {
+const handleImports = (source, directory) => {
 	const env = {
 		dynamic: {},
 		static: {},
 	};
 
 	let newSource = source;
-	while (true) {
+	while (newSource) {
 		const line = newSource.split("\n")[0];
 		if (line.trim() === "" || line.trim().split(" ")[0] === "import") {
 			for (const importFile of line.split(" ").slice(1)) {
 				if (importFile.split(".").at(-1) === "twl") {
-					if (fs.existsSync(importFile)) {
+					if (fs.existsSync(path.resolve(directory, importFile))) {
 						try {
-							const fileContent = fs.readFileSync(importFile, "utf8");
-							const newenv = run(fileContent);
+							const fileContent = fs.readFileSync(
+								path.resolve(directory, importFile),
+								"utf8",
+							);
+							const newenv = run(
+								fileContent,
+								path.dirname(path.resolve(directory, importFile)),
+							);
 							env.static = {
 								...env.static,
 								...newenv.static,

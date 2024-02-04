@@ -12,7 +12,7 @@ const shift = (node, i, cutoff) => {
 	if (node instanceof DeBrujinAST.Application) {
 		return new DeBrujinAST.Application(
 			shift(node.leftExpression, i, cutoff),
-			shift(node.rightExpression, i, cutoff)
+			shift(node.rightExpression, i, cutoff),
 		);
 	}
 };
@@ -25,14 +25,14 @@ const substitute = (node, e, m) => {
 
 	if (node instanceof DeBrujinAST.Abstraction) {
 		return new DeBrujinAST.Abstraction(
-			substitute(node.expression, shift(e, 1, 0), m + 1)
+			substitute(node.expression, shift(e, 1, 0), m + 1),
 		);
 	}
 
 	if (node instanceof DeBrujinAST.Application) {
 		return new DeBrujinAST.Application(
 			substitute(node.leftExpression, e, m),
-			substitute(node.rightExpression, e, m)
+			substitute(node.rightExpression, e, m),
 		);
 	}
 };
@@ -44,10 +44,10 @@ const betaReduceOnce = (node) => {
 				substitute(
 					node.leftExpression.expression,
 					shift(node.rightExpression, 1, 0),
-					0
+					0,
 				),
 				-1,
-				0
+				0,
 			);
 		}
 		const reducedLeft = betaReduceOnce(node.leftExpression);
@@ -56,7 +56,7 @@ const betaReduceOnce = (node) => {
 		}
 		return new DeBrujinAST.Application(
 			node.leftExpression,
-			betaReduceOnce(node.rightExpression)
+			betaReduceOnce(node.rightExpression),
 		);
 	}
 	if (node instanceof DeBrujinAST.Abstraction) {

@@ -20,7 +20,7 @@ export function convertToDeBrujin(node) {
 			if (node.binders.length > 1) {
 				context.push(node.binders[0]);
 				expr = convert(
-					new AST.Abstraction(node.binders.slice(1), node.expression)
+					new AST.Abstraction(node.binders.slice(1), node.expression),
 				);
 				context.pop();
 			} else {
@@ -33,7 +33,7 @@ export function convertToDeBrujin(node) {
 		if (node instanceof AST.Application) {
 			return new DeBrujinAST.Application(
 				convert(node.leftExpression),
-				convert(node.rightExpression)
+				convert(node.rightExpression),
 			);
 		}
 		throw new Error(`Unexpected node type: ${node.constructor.name}`);
@@ -92,7 +92,7 @@ export function convertToNamed(node) {
 		if (node instanceof DeBrujinAST.Application) {
 			return new AST.Application(
 				convert(node.leftExpression),
-				convert(node.rightExpression)
+				convert(node.rightExpression),
 			);
 		}
 		throw new Error(`Unexpected node type: ${node}`);

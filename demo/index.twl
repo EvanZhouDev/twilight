@@ -1,4 +1,4 @@
-import ./demo/functions.twl
+import ./test/functions.twl
 
 # Twilight supports functions of any complexity through De Brujin Indexing: Even this pair-based predecessor function implementation!
 

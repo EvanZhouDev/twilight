@@ -4,8 +4,8 @@ import { injectEnv } from "../util.js";
 import preprocess from "./preprocess/index.js";
 import reduce from "./reducer/reduce.js";
 
-const run = (source) => {
-	const [code, env] = preprocess(source);
+const run = (source, directory) => {
+	const [code, env] = preprocess(source, directory);
 
 	const ast = parseSource(code);
 

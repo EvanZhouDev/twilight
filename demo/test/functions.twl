@@ -1,4 +1,4 @@
-import booleans numerals
+import ./another.twl
 
 # Define basic functions, like "not" and the successor
 ¬ = λx.x F T
