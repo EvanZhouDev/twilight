@@ -1,10 +1,10 @@
 import AST from "./ast.js";
 import Token from "./token.js";
-import { ErrorType, generateError } from "#log/error.js";
 
 export default class Parser {
-	constructor(lexer) {
+	constructor(lexer, env) {
 		this.lexer = lexer;
+		this.env = env;
 		this.lookahead = this.lexer.next();
 	}
 
@@ -12,9 +12,12 @@ export default class Parser {
 		if (this.lookahead.type === type) {
 			this.lookahead = this.lexer.next();
 		} else {
-			// TODO: ADD ABILITY TO FIND WHERE ERROR ORIGINATED
-			throw new Error(generateError(ErrorType.UNEXPECTED_TOKEN, 0, 0));
+			throw new Error(`Unexpected token ${type}`);
 		}
+	}
+
+	end() {
+		return this.lookahead.type === Token.EOF;
 	}
 
 	binders() {
@@ -26,23 +29,21 @@ export default class Parser {
 		return binders;
 	}
 
-	parse() {
-		const expressions = [];
-		while (this.lookahead.type !== Token.EOF) {
-			if (this.lookahead.type === Token.EOL) {
-				this.match(Token.EOL);
-			} else if (
-				this.lookahead.type === Token.VAR &&
-				this.lexer.peek().type === Token.EQUALS
-			) {
-				expressions.push(this.assignment());
-			} else {
-				expressions.push(this.expression());
-			}
+	parseLine() {
+		while (this.lookahead.type === Token.EOL) {
+			this.match(Token.EOL);
 		}
-		return expressions;
+		if (
+			this.lookahead.type === Token.VAR &&
+			this.lexer.peek().type === Token.EQUALS
+		) {
+			return this.assignment();
+		}
+
+		return this.expression();
 	}
 
+	// Assignment must be a top-level expression, and cannot have a context
 	assignment() {
 		const name = this.lookahead.value;
 		this.match(Token.VAR);
@@ -51,45 +52,52 @@ export default class Parser {
 		return new AST.Assignment(name, expr);
 	}
 
-	expression() {
+	expression(context = []) {
 		if (this.lookahead.type === Token.LAMBDA) {
 			this.match(Token.LAMBDA);
 
 			const binders = this.binders();
 
 			this.match(Token.PERIOD);
-
-			const expr = this.expression();
+			const expr = this.expression([...context, ...binders]);
 
 			return new AST.Abstraction(binders, expr);
 		}
-
-		return this.application();
+		return this.application([...context]);
 	}
 
-	atom() {
+	atom(context = []) {
 		if (this.lookahead.type === Token.VAR) {
 			const name = this.lookahead.value;
 			this.match(Token.VAR);
-			return new AST.Variable(name);
+
+			if (!context.includes(name)) {
+				if (this.env[name]) {
+					return this.env[name];
+				}
+				throw new Error(`Unbound variable ${name}`);
+			}
+			return new AST.Variable(
+				name,
+				context.length - 1 - context.lastIndexOf(name),
+			);
 		}
 		if (this.lookahead.type === Token.LPAREN) {
 			this.match(Token.LPAREN);
-			const expr = this.expression();
+			const expr = this.expression([...context]);
 			this.match(Token.RPAREN);
 			return expr;
 		}
-		// TODO: ADD ABILITY TO FIND WHERE ERROR ORIGINATED
-		throw new Error(generateError(ErrorType.UNEXPECTED_TOKEN, 0, 0));
+		throw new Error(`Unexpected token ${this.lookahead.type}`);
 	}
 
-	application() {
-		let expression = this.atom();
+	application(context = []) {
+		let expression = this.atom([...context]);
 		while (
 			this.lookahead.type === Token.VAR ||
 			this.lookahead.type === Token.LPAREN
 		) {
-			expression = new AST.Application(expression, this.atom());
+			expression = new AST.Application(expression, this.atom([...context]));
 		}
 		return expression;
 	}

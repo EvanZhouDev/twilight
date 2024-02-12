@@ -4,7 +4,8 @@
 	"type": "module",
 	"imports": {
 		"#src/*": "./src/*",
-		"#parser/*": "./src/parser/*"
+		"#parser/*": "./src/parser/*",
+		"#log/*": "./src/log/*"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.5.3",

@@ -2,6 +2,7 @@
 import { expect, test } from "vitest";
 import AST from "#parser/ast.js";
 import { parseLine, parseSource } from "#parser/index.js";
+import { ErrorType, parseError } from "../src/log/error";
 
 test("Single Binder Abstraction", () => {
 	const ast = parseLine("\\x.x");
@@ -9,6 +10,13 @@ test("Single Binder Abstraction", () => {
 });
 
 test("Unexpected Token Error", () => {
+	try {
+		parseLine("\\\\x.x");
+	} catch (e) {
+		expect(parseError(e.toString().slice(7))).type ===
+			ErrorType.UNEXPECTED_TOKEN;
+	}
+
 	expect(() => parseLine("\\\\x.x")).toThrowError(/Unexpected token/);
 	expect(() => parseLine("\\x..x")).toThrowError(/Unexpected token/);
 	expect(() => parseLine("\\x.(x")).toThrowError(/Unexpected token/);
