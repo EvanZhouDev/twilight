@@ -1,9 +1,10 @@
-import Token from "./token.js";
+import Token from "lang/core/token";
 
 export default class Lexer {
+	pos = 0;
+
 	constructor(input) {
 		this.input = input;
-		this.pos = 0;
 	}
 
 	next() {
@@ -17,7 +18,7 @@ export default class Lexer {
 			"\n": Token.EOL,
 		};
 
-		const reservedTokens = Object.keys(tokenMap).concat(" ");
+		const reservedTokens = [...Object.keys(tokenMap), " "];
 
 		while (this.pos < this.input.length && this.input[this.pos] === " ") {
 			this.pos++;

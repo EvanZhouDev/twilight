@@ -1,5 +1,5 @@
-import deepEqual from "../../util/deepEqual.js";
-import AST from "../core/ast.js";
+import deepEqual from "util/deepEqual";
+import AST from "lang/core/ast";
 
 const shift = (node, i, cutoff) => {
 	if (node instanceof AST.Variable) {

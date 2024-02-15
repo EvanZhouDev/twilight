@@ -1,5 +1,5 @@
-import AST from "./ast.js";
-import Token from "./token.js";
+import AST from "lang/core/ast";
+import Token from "lang/core/token";
 
 export default class Parser {
 	constructor(lexer, env) {
@@ -72,9 +72,16 @@ export default class Parser {
 			this.match(Token.VAR);
 
 			if (!context.includes(name)) {
-				if (this.env[name]) {
-					return this.env[name];
+				if (this.env.static[name]) {
+					return this.env.static[name];
 				}
+
+				for (const regexKey in this.env.dynamic) {
+					if (new RegExp(regexKey, "g").test(name)) {
+						return this.env.dynamic[regexKey](name);
+					}
+				}
+
 				throw new Error(`Unbound variable ${name}`);
 			}
 			return new AST.Variable(

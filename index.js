@@ -9,7 +9,7 @@ try {
 2 = \\s z.s (s z)
 3 = \\s z.s (s (s z))
 4 = \\s z.s (s (s (s z)))
-5 = \\s z.s (s (s (s (s (s (s (s (s z))))))))
+5 = \\s z.s (s (s (s (s z))))
 
 T = \\x y.x
 F = \\x y.y
@@ -30,7 +30,7 @@ R = λr n.Z n 1 (Z (P n) 1 ((r (P n)) S (r (P (P n)))))
 
 fib = λn.Y R n
 
-fib 0
+fib 5
 `, "/");
 } catch (e) {
 	console.log(parseError(e.toString().slice(7) /* removes "Error: " */));
