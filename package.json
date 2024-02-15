@@ -2,11 +2,6 @@
 	"name": "twilight",
 	"module": "index.js",
 	"type": "module",
-	"imports": {
-		"#src/*": "./src/*",
-		"#parser/*": "./src/parser/*",
-		"#log/*": "./src/log/*"
-	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.5.3",
 		"vitest": "^1.2.2"
