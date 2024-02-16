@@ -1,3 +1,5 @@
+// TODO: Overhaul tests for Twilight Core
+
 // sum.test.js
 import { expect, test } from "vitest";
 import AST from "#parser/ast.js";
@@ -27,7 +29,7 @@ test("Unexpected Token Error", () => {
 test("Multiple Binder Abstractions", () => {
 	const ast = parseLine("\\x y.x");
 	expect(ast).toStrictEqual(
-		new AST.Abstraction(["x", "y"], new AST.Variable("x"))
+		new AST.Abstraction(["x", "y"], new AST.Variable("x")),
 	);
 });
 
@@ -36,8 +38,8 @@ test("Parenthesized Application w/o Space", () => {
 	expect(ast).toStrictEqual(
 		new AST.Application(
 			new AST.Abstraction(["x", "y"], new AST.Variable("x")),
-			new AST.Variable("x")
-		)
+			new AST.Variable("x"),
+		),
 	);
 });
 test("Parenthesized Application w/ Space", () => {
@@ -45,8 +47,8 @@ test("Parenthesized Application w/ Space", () => {
 	expect(ast).toStrictEqual(
 		new AST.Application(
 			new AST.Abstraction(["x", "y"], new AST.Variable("x")),
-			new AST.Variable("x")
-		)
+			new AST.Variable("x"),
+		),
 	);
 });
 
@@ -55,8 +57,8 @@ test("In-Abstraction Application", () => {
 	expect(ast).toStrictEqual(
 		new AST.Abstraction(
 			["x", "y"],
-			new AST.Application(new AST.Variable("x"), new AST.Variable("y"))
-		)
+			new AST.Application(new AST.Variable("x"), new AST.Variable("y")),
+		),
 	);
 });
 
@@ -66,17 +68,20 @@ test("Abstraction to Abstraction Application", () => {
 		new AST.Application(
 			new AST.Abstraction(
 				["x", "y"],
-				new AST.Application(new AST.Variable("x"), new AST.Variable("y"))
+				new AST.Application(new AST.Variable("x"), new AST.Variable("y")),
 			),
-			new AST.Abstraction(["x"], new AST.Variable("x"))
-		)
+			new AST.Abstraction(["x"], new AST.Variable("x")),
+		),
 	);
 });
 
 test("Assignment", () => {
 	const ast = parseLine("var = \\x.x");
 	expect(ast).toStrictEqual(
-		new AST.Assignment("var", new AST.Abstraction(["x"], new AST.Variable("x")))
+		new AST.Assignment(
+			"var",
+			new AST.Abstraction(["x"], new AST.Variable("x")),
+		),
 	);
 });
 
@@ -85,14 +90,14 @@ test("Multi-Line Parse Test", () => {
 	expect(ast).toStrictEqual([
 		new AST.Assignment(
 			"var",
-			new AST.Abstraction(["x"], new AST.Variable("x"))
+			new AST.Abstraction(["x"], new AST.Variable("x")),
 		),
 		new AST.Application(
 			new AST.Abstraction(
 				["x", "y"],
-				new AST.Application(new AST.Variable("x"), new AST.Variable("y"))
+				new AST.Application(new AST.Variable("x"), new AST.Variable("y")),
 			),
-			new AST.Abstraction(["x"], new AST.Variable("x"))
+			new AST.Abstraction(["x"], new AST.Variable("x")),
 		),
 	]);
 });

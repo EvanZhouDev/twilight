@@ -17,9 +17,9 @@ const importFile = ({
 			importPath,
 		);
 
-        if (!fs.existsSync(filePath)) {
-            throw new Error(`The file ${filePath} imported doesn't exist.`)
-        }
+		if (!fs.existsSync(filePath)) {
+			throw new Error(`The file ${filePath} imported doesn't exist.`);
+		}
 
 		if (importHistory.includes(filePath)) {
 			throw new Error(
