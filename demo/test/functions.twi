@@ -1,4 +1,4 @@
-import ./another.twl
+import ./another.twi
 
 # Define basic functions, like "not" and the successor
 ¬ = λx.x F T
