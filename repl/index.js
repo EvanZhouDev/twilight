@@ -5,6 +5,7 @@ import importFile from "lang/runtime/handleImport";
 import readline from "readline";
 import parseLine from "lang/core";
 import process from "process";
+import flatten from "../lang/stdout/format";
 
 const env = {
 	static: {},
@@ -34,10 +35,11 @@ rl.on("line", (input) => {
 
 		if (line instanceof AST.Assignment) {
 			env.static[line.name] = line.expr;
+			console.log(flatten(line));
 		}
 
 		if (line instanceof AST.Abstraction || line instanceof AST.Application) {
-			console.log(normalize(line).toString());
+			console.log(flatten(normalize(line)));
 		}
 	}
 	rl.prompt();

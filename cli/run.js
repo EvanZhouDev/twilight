@@ -4,6 +4,7 @@ import normalize from "lang/runtime/normalize";
 import AST from "lang/core/ast.js";
 import preprocess from "lang/runtime/preprocess";
 import importFile from "lang/runtime/handleImport";
+import flatten from "../lang/stdout/format";
 
 const run = ({
 	source: rawSource,
@@ -45,10 +46,11 @@ const run = ({
 
 		if (line instanceof AST.Assignment) {
 			env.static[line.name] = line.expr;
+			console.log(flatten(line));
 		}
 
 		if (line instanceof AST.Abstraction || line instanceof AST.Application) {
-			console.log(normalize(line).toString());
+			console.log(flatten(normalize(line)));
 		}
 	}
 
