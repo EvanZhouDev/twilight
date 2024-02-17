@@ -1,6 +1,6 @@
 import Lexer from "lang/core/lexer";
 import Parser from "lang/core/parser";
-import normalize from "lang/runtime/normalize";
+import simplify from "lang/runtime/simplify";
 import AST from "lang/core/ast.js";
 import preprocess from "lang/runtime/preprocess";
 import importFile from "lang/runtime/handleImport";
@@ -50,7 +50,7 @@ const run = ({
 		}
 
 		if (line instanceof AST.Abstraction || line instanceof AST.Application) {
-			console.log(flatten(normalize(line)));
+			console.log(flatten(simplify(line)));
 		}
 	}
 

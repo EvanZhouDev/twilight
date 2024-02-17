@@ -86,21 +86,46 @@ const betaReduce = (node) => {
 	}
 };
 
-export const normalize = (node) => {
+const normalize = (node) => {
 	const original = structuredClone(node);
 	const reduced = betaReduce(node);
-	// return reduced;
-	// console.log(reduced.toString());
+
 	if (deepEqual(original, reduced)) {
 		return reduced;
 	}
 	return normalize(reduced);
 };
 
-export default normalize;
+const collapseAbstractions = (node) => {
+	if (node instanceof AST.Abstraction) {
+		let expr = node.expr;
+		let binders = [...node.binders];
 
-// (λf x.(((λg h.(h (g f))) ((λg h.(h (g f))) (λu.x))) (λu.u)))
-// (λf x.((λu.u) (((λg h.(h (g f))) (λu.(λu.u))) f)))
+		while (expr instanceof AST.Abstraction) {
+			binders = [...binders, ...expr.binders];
+			expr = expr.expr;
+		}
 
-// (λf x.(((λg.(λh.(h (g f)))) ((λg.(λh.(h (g f)))) (λu.x))) (λu.u)))
-// (λf x.((λu.u) (((λg.(λh.(h (g f)))) (λu.x)) f)))
+		return new AST.Abstraction(binders, expr);
+	}
+
+	if (node instanceof AST.Application) {
+		return new AST.Application(
+			collapseAbstractions(node.leftExpr),
+			collapseAbstractions(node.rightExpr),
+		);
+	}
+
+	if (node instanceof AST.Variable) {
+		return new AST.Variable(node.name, node.idx);
+	}
+};
+
+const simplify = (node) => {
+	const normal = normalize(node);
+	const collapsed = collapseAbstractions(normal);
+
+	return collapsed;
+};
+
+export default simplify;
