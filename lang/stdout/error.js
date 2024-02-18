@@ -171,7 +171,7 @@ export const throwUnboundVariable = (
 		linePosition,
 		importHistory,
 	);
-	throw new Error(`Unbound variable ${name}`);
+	throw new Error(`TwilightLangError: Unbound variable ${name}`);
 };
 
 export const throwIllegalImport = (text, position, importHistory) => {

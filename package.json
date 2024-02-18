@@ -1,20 +1,23 @@
 {
-  "name": "twilight",
-  "module": "index.js",
-  "type": "module",
-  "devDependencies": {
-    "@biomejs/biome": "^1.5.3",
-    "vitest": "^1.2.2"
-  },
-  "scripts": {
-    "format": "biome format . --write",
-    "lint": "biome lint .",
-    "fix": "biome check --apply .",
-    "fix-unsafe": "biome check --apply-unsafe .",
-    "test": "vitest"
-  },
-  "dependencies": {
-    "chalk": "^5.3.0",
-    "fast-levenshtein": "^3.0.0"
-  }
+	"name": "twilight",
+	"module": "index.js",
+	"type": "module",
+	"devDependencies": {
+		"@biomejs/biome": "^1.5.3",
+		"vitest": "^1.2.2"
+	},
+	"scripts": {
+		"format": "biome format . --write",
+		"lint": "biome lint .",
+		"fix": "biome check --apply .",
+		"fix-unsafe": "biome check --apply-unsafe .",
+		"test": "vitest"
+	},
+	"dependencies": {
+		"chalk": "^5.3.0",
+		"fast-levenshtein": "^3.0.0"
+	},
+	"bin": {
+		"twilight": "./bin/index.js"
+	}
 }

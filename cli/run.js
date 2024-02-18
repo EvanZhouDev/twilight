@@ -4,7 +4,7 @@ import simplify from "lang/runtime/simplify";
 import AST from "lang/core/ast.js";
 import preprocess from "lang/runtime/preprocess";
 import importFile from "lang/runtime/handleImport";
-import print from "../lang/stdout/print";
+import print from "lang/stdout/print";
 import assign from "lang/runtime/assign";
 
 const run = ({
