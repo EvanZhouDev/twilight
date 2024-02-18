@@ -5,7 +5,7 @@ import run from "cli/run";
 import deBrujinFlatten from "lang/stdout/deBrujinFlatten";
 import {
 	throwCyclicalImport,
-	throwNonexistentFile,
+	throwNonexistentImportedFile,
 	throwNonexistentImport,
 } from "lang/stdout/error";
 
@@ -25,7 +25,7 @@ const importFile = ({
 		);
 
 		if (!fs.existsSync(filePath)) {
-			throwNonexistentFile(filePath, importHistory);
+			throwNonexistentImportedFile(filePath, importHistory);
 		}
 
 		if (importHistory.includes(filePath)) {

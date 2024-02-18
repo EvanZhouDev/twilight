@@ -212,7 +212,18 @@ export const throwNonexistentImport = (importName, importHistory) => {
 	);
 };
 
-export const throwNonexistentFile = (importName, importHistory) => {
+export const throwNonexistentFile = (fileName) => {
+	console.log(
+		`${chalk.redBright("×")} ${chalk.red(
+			`File ${chalk.white(fileName)} does not exist.`,
+		)}`,
+	);
+	throw new Error(
+		`TwilightLangError: File ${fileName} doesn't exist.`,
+	);
+};
+
+export const throwNonexistentImportedFile = (importName, importHistory) => {
 	const fileImported =
 		path.basename(importHistory.at(-1)) !== "."
 			? path.basename(importHistory.at(-1))

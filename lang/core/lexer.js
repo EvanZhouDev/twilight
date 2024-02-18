@@ -42,6 +42,7 @@ export default class Lexer {
 		}
 
 		if (tokenMap[ch] === undefined) {
+			// Shouldn't happen, so not included.
 			throw new Error(`Unexpected character: ${ch}`);
 		}
 		return new Token(tokenMap[ch]);

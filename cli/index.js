@@ -1,11 +1,12 @@
 import run from "./run.js";
 import fs from "fs";
+import { throwNonexistentFile } from "lang/stdout/error.js";
 
 export default (path) => {
-	if (!fs.readFileSync(path)) {
-		throw new Error("This path does not exist.");
-	}
 	try {
+		if (!fs.existsSync(path)) {
+			throwNonexistentFile(path);
+		}
 		run({
 			source: fs.readFileSync(path, "utf-8"),
 			importHistory: [path],
