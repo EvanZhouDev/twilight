@@ -1,3 +1,4 @@
-# Twiλight
+![Twilight Banner](./assets/banner.png)
 
-Lambda calculus for the 21st century.
+## Getting Started
+Welcome to Twilight!
