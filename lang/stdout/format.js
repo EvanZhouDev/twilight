@@ -3,12 +3,12 @@ import chalk from "chalk";
 
 const colors = ["red", "green", "yellow", "blue", "magenta", "cyan"];
 
-const flatten = (node, colorArr = []) => {
+const format = (node, colorArr = [], useColor = true) => {
 	// All parenthesizing is done inside the Application logic, to reduce amount of parenthesis that are used so that it's understandable (and syntatically correct) but concise
 	if (node instanceof AST.Application) {
-		const right = flatten(node.rightExpr, [...colorArr]);
+		const right = format(node.rightExpr, [...colorArr], useColor);
 
-		const left = flatten(node.leftExpr, [...colorArr]);
+		const left = format(node.leftExpr, [...colorArr], useColor);
 
 		switch (node.leftExpr.constructor) {
 			// Applications are leftward binding, so if they occur as the left expression, they do not need parenthesis around the left expression
@@ -53,11 +53,12 @@ const flatten = (node, colorArr = []) => {
 	}
 
 	if (node instanceof AST.Variable) {
+		if (!useColor) return String(node.name);
 		return chalk[colorArr[node.idx]](node.name);
 	}
 
 	if (node instanceof AST.Assignment) {
-		return `${node.name} -> ${flatten(node.expr, [...colorArr])}`;
+		return `${node.name} -> ${format(node.expr, [...colorArr], useColor)}`;
 	}
 
 	if (node instanceof AST.Abstraction) {
@@ -67,12 +68,14 @@ const flatten = (node, colorArr = []) => {
 			binderColors.unshift(colors[(colorArr.length + i) % colors.length]);
 		}
 
-		const expr = flatten(node.expr, [...binderColors, ...colorArr]);
+		const expr = format(node.expr, [...binderColors, ...colorArr], useColor);
 
 		return `λ${node.binders
-			.map((x, i) => chalk[binderColors[binderColors.length - i - 1]](x))
+			.map((x, i) =>
+				useColor ? chalk[binderColors[binderColors.length - i - 1]](x) : x,
+			)
 			.join(" ")}.${expr}`;
 	}
 };
 
-export default flatten;
+export default format;

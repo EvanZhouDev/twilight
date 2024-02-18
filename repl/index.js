@@ -5,11 +5,13 @@ import importFile from "lang/runtime/handleImport";
 import readline from "readline";
 import parseLine from "lang/core";
 import process from "process";
-import flatten from "../lang/stdout/format";
+import print from "lang/stdout/print";
+import assign from "lang/runtime/assign";
 
 const env = {
 	static: {},
 	dynamic: {},
+	reverse: {},
 };
 
 console.log("Twilight REPL v0.1");
@@ -34,12 +36,12 @@ rl.on("line", (input) => {
 		const line = parseLine(preprocess(input), env);
 
 		if (line instanceof AST.Assignment) {
-			env.static[line.name] = line.expr;
-			console.log(flatten(line));
+			assign(env, line.name, line.expr);
+			console.log(print(line, env.reverse));
 		}
 
 		if (line instanceof AST.Abstraction || line instanceof AST.Application) {
-			console.log(flatten(simplify(line)));
+			console.log(print(simplify(line), env.reverse));
 		}
 	}
 	rl.prompt();

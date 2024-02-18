@@ -4,13 +4,15 @@ import simplify from "lang/runtime/simplify";
 import AST from "lang/core/ast.js";
 import preprocess from "lang/runtime/preprocess";
 import importFile from "lang/runtime/handleImport";
-import flatten from "../lang/stdout/format";
+import print from "../lang/stdout/print";
+import assign from "lang/runtime/assign";
 
 const run = ({
 	source: rawSource,
 	env = {
 		static: {},
 		dynamic: {},
+		reverse: {}
 	},
 	importHistory = [],
 }) => {
@@ -45,12 +47,12 @@ const run = ({
 		const line = parser.parseLine();
 
 		if (line instanceof AST.Assignment) {
-			env.static[line.name] = line.expr;
-			console.log(flatten(line));
+			assign(env, line.name, line.expr);
+			// console.log(print(line, env.reverse));
 		}
 
 		if (line instanceof AST.Abstraction || line instanceof AST.Application) {
-			console.log(flatten(simplify(line)));
+			console.log(print(simplify(line), env.reverse));
 		}
 	}
 

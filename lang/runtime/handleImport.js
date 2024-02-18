@@ -2,12 +2,14 @@ import path from "path";
 import stdlib from "lang/runtime/stdlib";
 import fs from "fs";
 import run from "cli/run";
+import deBrujinFlatten from "lang/stdout/deBrujinFlatten";
 
 const importFile = ({
 	path: importPath,
 	env = {
 		static: {},
 		dynamic: {},
+		reverse: {},
 	},
 	importHistory,
 }) => {
@@ -40,6 +42,13 @@ const importFile = ({
 		// Check static libraries before accessing dynamic
 		if (stdlib.static[importPath]) {
 			env.static = { ...env.static, ...stdlib.static[importPath] };
+
+			for (const key in stdlib.static[importPath]) {
+				if (!env.reverse[deBrujinFlatten(stdlib.static[importPath][key])]) {
+					env.reverse[deBrujinFlatten(stdlib.static[importPath][key])] = [];
+				}
+				env.reverse[deBrujinFlatten(stdlib.static[importPath][key])].push(key);
+			}
 		} else if (stdlib.dynamic[importPath]) {
 			env.dynamic = { ...env.dynamic, ...stdlib.dynamic[importPath] };
 		} else {
