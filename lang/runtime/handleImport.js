@@ -47,7 +47,15 @@ const importFile = ({
 				if (!env.reverse[deBrujinFlatten(stdlib.static[importPath][key])]) {
 					env.reverse[deBrujinFlatten(stdlib.static[importPath][key])] = [];
 				}
-				env.reverse[deBrujinFlatten(stdlib.static[importPath][key])].push(key);
+				if (
+					!env.reverse[
+						deBrujinFlatten(stdlib.static[importPath][key])
+					].includes(key)
+				) {
+					env.reverse[deBrujinFlatten(stdlib.static[importPath][key])].push(
+						key,
+					);
+				}
 			}
 		} else if (stdlib.dynamic[importPath]) {
 			env.dynamic = { ...env.dynamic, ...stdlib.dynamic[importPath] };

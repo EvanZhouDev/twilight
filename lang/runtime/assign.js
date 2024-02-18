@@ -4,5 +4,7 @@ export default (env, name, expr) => {
 	if (!env.reverse[deBrujinFlatten(expr)]) {
 		env.reverse[deBrujinFlatten(expr)] = [];
 	}
-	env.reverse[deBrujinFlatten(expr)].push(name);
+	if (!env.reverse[deBrujinFlatten(expr)].includes(name)) {
+		env.reverse[deBrujinFlatten(expr)].push(name);
+	}
 };
