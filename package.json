@@ -1,5 +1,5 @@
 {
-	"name": "twilight",
+	"name": "twilight-lang",
 	"module": "index.js",
 	"type": "module",
 	"devDependencies": {
@@ -11,13 +11,14 @@
 		"lint": "biome lint .",
 		"fix": "biome check --apply .",
 		"fix-unsafe": "biome check --apply-unsafe .",
-		"test": "vitest"
+		"test": "vitest",
+		"build": "bun build ./index.js --compile --outfile ./bin/twilight"
 	},
 	"dependencies": {
 		"chalk": "^5.3.0",
 		"fast-levenshtein": "^3.0.0"
 	},
 	"bin": {
-		"twilight": "./bin/index.js"
+		"twilight": "./bin/twilight"
 	}
 }
