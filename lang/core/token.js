@@ -1,12 +1,12 @@
 export default class Token {
-	static LAMBDA = "lambda";
+	static LAMBDA = "λ";
 	static VAR = "var";
-	static PERIOD = "period";
-	static LPAREN = "lparen";
-	static RPAREN = "rparen";
+	static PERIOD = ".";
+	static LPAREN = "(";
+	static RPAREN = ")";
 	static EOL = "eol";
 	static EOF = "eof";
-	static EQUALS = "equal";
+	static EQUALS = "=";
 
 	constructor(type, value) {
 		this.type = type;

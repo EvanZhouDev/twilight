@@ -12,7 +12,7 @@ const run = ({
 	env = {
 		static: {},
 		dynamic: {},
-		varLookup: {}
+		varLookup: {},
 	},
 	importHistory = [],
 }) => {
@@ -40,7 +40,7 @@ const run = ({
 
 	const lexer = new Lexer(source);
 
-	const parser = new Parser(lexer, env);
+	const parser = new Parser(lexer, env, importHistory);
 
 	while (true) {
 		if (parser.end()) break;

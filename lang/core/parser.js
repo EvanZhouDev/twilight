@@ -1,18 +1,31 @@
 import AST from "lang/core/ast";
 import Token from "lang/core/token";
+import {
+	throwUnexpectedToken,
+	throwExpectedExpression,
+	throwUnboundVariable,
+	throwIllegalImport,
+} from "lang/stdout/error";
 
 export default class Parser {
-	constructor(lexer, env) {
+	constructor(lexer, env, importHistory) {
 		this.lexer = lexer;
 		this.env = env;
 		this.lookahead = this.lexer.next();
+		this.importHistory = importHistory;
 	}
 
 	match(type) {
 		if (this.lookahead.type === type) {
 			this.lookahead = this.lexer.next();
 		} else {
-			throw new Error(`Unexpected token ${type}`);
+			throwUnexpectedToken(
+				this.lookahead.type,
+				type,
+				this.lexer.input,
+				this.lexer.pos,
+				this.importHistory,
+			);
 		}
 	}
 
@@ -23,6 +36,13 @@ export default class Parser {
 	binders() {
 		const binders = [];
 		while (this.lookahead.type === Token.VAR) {
+			if (this.lookahead.value === "import") {
+				throwIllegalImport(
+					this.lexer.input,
+					this.lexer.pos,
+					this.importHistory,
+				);
+			}
 			binders.push(this.lookahead.value);
 			this.match(Token.VAR);
 		}
@@ -69,6 +89,13 @@ export default class Parser {
 	atom(context = []) {
 		if (this.lookahead.type === Token.VAR) {
 			const name = this.lookahead.value;
+			if (name === "import") {
+				throwIllegalImport(
+					this.lexer.input,
+					this.lexer.pos,
+					this.importHistory,
+				);
+			}
 			this.match(Token.VAR);
 
 			if (!context.includes(name)) {
@@ -82,7 +109,12 @@ export default class Parser {
 					}
 				}
 
-				throw new Error(`Unbound variable ${name}`);
+				throwUnboundVariable(
+					name,
+					this.lexer.input,
+					this.lexer.pos,
+					this.importHistory,
+				);
 			}
 			return new AST.Variable(
 				name,
@@ -95,7 +127,12 @@ export default class Parser {
 			this.match(Token.RPAREN);
 			return expr;
 		}
-		throw new Error(`Unexpected token ${this.lookahead.type}`);
+		throwExpectedExpression(
+			this.lookahead.type,
+			this.lexer.input,
+			this.lexer.pos,
+			this.importHistory,
+		);
 	}
 
 	application(context = []) {

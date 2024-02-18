@@ -33,16 +33,18 @@ rl.on("line", (input) => {
 			});
 		}
 	} else {
-		const line = parseLine(preprocess(input), env);
+		try {
+			const line = parseLine(preprocess(input), env);
 
-		if (line instanceof AST.Assignment) {
-			assign(env, line.name, line.expr);
-			console.log(print(line, env.varLookup));
-		}
+			if (line instanceof AST.Assignment) {
+				assign(env, line.name, line.expr);
+				console.log(print(line, env.varLookup));
+			}
 
-		if (line instanceof AST.Abstraction || line instanceof AST.Application) {
-			console.log(print(simplify(line), env.varLookup));
-		}
+			if (line instanceof AST.Abstraction || line instanceof AST.Application) {
+				console.log(print(simplify(line), env.varLookup));
+			}
+		} catch {}
 	}
 	rl.prompt();
 });

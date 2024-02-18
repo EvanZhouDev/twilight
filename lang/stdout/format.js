@@ -1,7 +1,7 @@
 import AST from "lang/core/ast";
 import chalk from "chalk";
 
-const colors = ["red", "green", "yellow", "blue", "magenta", "cyan"];
+const colors = ["green", "yellow", "blue", "magenta", "cyan"];
 
 const format = (node, colorArr = [], useColor = true) => {
 	// All parenthesizing is done inside the Application logic, to reduce amount of parenthesis that are used so that it's understandable (and syntatically correct) but concise

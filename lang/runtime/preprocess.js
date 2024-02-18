@@ -12,5 +12,5 @@ const removeComments = (rawSource) => {
 
 export default (rawSource) => {
 	const source = removeComments(rawSource);
-	return removeEmptyLines(source);
+	return source;
 };

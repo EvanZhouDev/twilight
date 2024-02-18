@@ -5,8 +5,12 @@ export default (path) => {
 	if (!fs.readFileSync(path)) {
 		throw new Error("This path does not exist.");
 	}
-	run({
-		source: fs.readFileSync(path, "utf-8"),
-		importHistory: [path],
-	});
+	try {
+		run({
+			source: fs.readFileSync(path, "utf-8"),
+			importHistory: [path],
+		});
+	} catch (e) {
+		// console.log(e);
+	}
 };
