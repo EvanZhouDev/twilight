@@ -111,6 +111,7 @@ export default class Parser {
 
 				throwUnboundVariable(
 					name,
+					[...context, ...Object.keys(this.env.static)],
 					this.lexer.input,
 					this.lexer.pos,
 					this.importHistory,

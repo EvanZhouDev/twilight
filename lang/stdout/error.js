@@ -1,6 +1,20 @@
 import Token from "lang/core/token";
 import chalk from "chalk";
 import path from "path";
+import levenshtein from "fast-levenshtein";
+
+const findMostSimilarTerm = (name, potential) => {
+	let minDistance = 2;
+	let mostSimilarTerm = null;
+	for (const term of potential) {
+		const distance = levenshtein.get(name, term);
+		if (distance < minDistance) {
+			minDistance = distance;
+			mostSimilarTerm = term;
+		}
+	}
+	return mostSimilarTerm;
+};
 
 const getLineAndPosition = (text, position) => {
 	const lines = text.split("\n");
@@ -27,11 +41,8 @@ const generateFilePreview = (
 	linePositionEnd,
 	importHistory,
 ) => {
-	const fileLocation = importHistory === undefined
-		? "REPL"
-		: path.basename(importHistory);
-
-
+	const fileLocation =
+		importHistory === undefined ? "REPL" : path.basename(importHistory);
 	console.log(`${" ".repeat(
 		String(lineCount).length,
 	)} ╭─${chalk.bold.blueBright(fileLocation)}:${lineCount}:${linePositionStart}
@@ -41,12 +52,15 @@ ${" ".repeat(String(lineCount).length)} ╰${`${"─".repeat(
 	)}${chalk
 		.magentaBright("^")
 		.repeat(linePositionEnd - linePositionStart + 1)}`}${"─".repeat(
-		fileLocation.length +
-			1 +
-			String(lineCount).length +
-			1 +
-			String(linePositionStart).length -
-			linePositionEnd,
+		Math.max(
+			fileLocation.length +
+				1 +
+				String(lineCount).length +
+				1 +
+				String(linePositionStart).length -
+				linePositionEnd,
+			0,
+		),
 	)}`);
 };
 
@@ -89,7 +103,7 @@ export const throwUnexpectedToken = (
 		);
 	}
 
-	throw new Error(`Expected ${expected}, but got ${token}.`);
+	throw new Error(`TwilightLangError: Expected ${expected}, but got ${token}.`);
 };
 
 export const throwExpectedExpression = (
@@ -126,24 +140,34 @@ export const throwExpectedExpression = (
 		);
 	}
 
-	throw new Error(`Expression expected, but got ${token}.`);
+	throw new Error(`TwilightLangError: Expression expected, but got ${token}.`);
 };
 
-export const throwUnboundVariable = (name, text, position, importHistory) => {
+export const throwUnboundVariable = (
+	name,
+	potential,
+	text,
+	position,
+	importHistory,
+) => {
 	const { line, linePosition, lineCount } = getLineAndPosition(text, position);
+
+	const mostSimilarTerm = findMostSimilarTerm(name, potential);
 
 	console.log(
 		`${chalk.redBright("×")} ${chalk.red(
-			`Unbound variable "${chalk.white(
-				name,
-			)}". Try assigning it to a value, then using it.`,
+			`Unbound variable "${chalk.white(name)}". ${
+				mostSimilarTerm !== null
+					? `Did you mean: "${chalk.white(mostSimilarTerm)}"?`
+					: "Try assigning it to a value, then using it."
+			} `,
 		)}`,
 	);
 
 	generateFilePreview(
 		line,
 		lineCount,
-		linePosition,
+		linePosition - name.length + 1,
 		linePosition,
 		importHistory,
 	);
@@ -168,5 +192,80 @@ export const throwIllegalImport = (text, position, importHistory) => {
 		linePosition,
 		importHistory,
 	);
-	throw new Error("Illegal import detected.");
+	throw new Error("TwilightLangError: Illegal import detected.");
+};
+
+export const throwNonexistentImport = (importName, importHistory) => {
+	const fileImported =
+		path.basename(importHistory.at(-1)) !== "."
+			? path.basename(importHistory.at(-1))
+			: "Twilight REPL";
+	console.log(
+		`${chalk.redBright("×")} ${chalk.red(
+			`"${chalk.white(importName)}" imported from ${chalk.white(
+				fileImported,
+			)} is not in the standard library. If you are attempting to import a file, ensure that it ends in .twi`,
+		)}`,
+	);
+	throw new Error(
+		`TwilightLangError: No import ${importName} found in standard library.`,
+	);
+};
+
+export const throwNonexistentFile = (importName, importHistory) => {
+	const fileImported =
+		path.basename(importHistory.at(-1)) !== "."
+			? path.basename(importHistory.at(-1))
+			: "Twilight REPL";
+	console.log(
+		`${chalk.redBright("×")} ${chalk.red(
+			`File ${chalk.white(importName)} imported from ${chalk.white(
+				fileImported,
+			)} does not exist.`,
+		)}`,
+	);
+	throw new Error(
+		`TwilightLangError: The file ${importName} imported doesn't exist.`,
+	);
+};
+
+export const throwNonexistentReplCommand = (command) => {
+	console.log(
+		`${chalk.redBright("×")} ${chalk.red(
+			`REPL command ${chalk.white(
+				`.${command}`,
+			)} does not exist. Try running ${chalk.white(
+				".help",
+			)} for available commands.`,
+		)}`,
+	);
+	throw new Error(
+		`TwilightLangError: The REPL command ${command} doesn't exist.`,
+	);
+};
+
+export const throwCyclicalImport = (importPath, importHistory) => {
+	console.log(
+		`${chalk.redBright("×")} ${chalk.red(
+			`Cyclical import detected. You are importing ${chalk.white(
+				path.basename(importPath),
+			)} from ${chalk.white(
+				path.basename(importHistory.at(-1)),
+			)}, but it has already been imported from ${chalk.white(
+				path.basename(importHistory[importHistory.indexOf(importPath) - 1]) ===
+					"."
+					? "Twilight REPL"
+					: path.basename(importHistory[importHistory.indexOf(importPath) - 1]),
+			)}`,
+		)}`,
+	);
+	throw new Error(
+		`TwilightLangError: Cyclical import detected. You are importing ${path.basename(
+			importPath,
+		)} from ${path.basename(
+			importHistory.at(-1),
+		)}, but it has already been imported from ${path.basename(
+			importHistory[importHistory.indexOf(importPath) - 1],
+		)}`,
+	);
 };

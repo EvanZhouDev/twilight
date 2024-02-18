@@ -11,6 +11,8 @@ export default (path) => {
 			importHistory: [path],
 		});
 	} catch (e) {
-		// console.log(e);
+		if (!e.toString().includes("TwilightLangError")) {
+			console.log(e);
+		}
 	}
 };

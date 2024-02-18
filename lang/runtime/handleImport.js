@@ -3,6 +3,11 @@ import stdlib from "lang/runtime/stdlib";
 import fs from "fs";
 import run from "cli/run";
 import deBrujinFlatten from "lang/stdout/deBrujinFlatten";
+import {
+	throwCyclicalImport,
+	throwNonexistentFile,
+	throwNonexistentImport,
+} from "lang/stdout/error";
 
 const importFile = ({
 	path: importPath,
@@ -20,17 +25,11 @@ const importFile = ({
 		);
 
 		if (!fs.existsSync(filePath)) {
-			throw new Error(`The file ${filePath} imported doesn't exist.`);
+			throwNonexistentFile(filePath, importHistory);
 		}
 
 		if (importHistory.includes(filePath)) {
-			throw new Error(
-				`Cyclical import detected. You are importing ${filePath} from ${importHistory.at(
-					-1,
-				)}, but it has already been imported from ${
-					importHistory[importHistory.indexOf(filePath) - 1]
-				}`,
-			);
+			throwCyclicalImport(filePath, importHistory);
 		}
 
 		run({
@@ -60,7 +59,7 @@ const importFile = ({
 		} else if (stdlib.dynamic[importPath]) {
 			env.dynamic = { ...env.dynamic, ...stdlib.dynamic[importPath] };
 		} else {
-			throw new Error(`No import ${importPath} found in standard library.`);
+			throwNonexistentImport(importPath, importHistory);
 		}
 	}
 };
