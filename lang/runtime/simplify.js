@@ -21,7 +21,6 @@ const shift = (node, i, cutoff) => {
 };
 
 const substitute = (node, e, m) => {
-	// console.log("SUB", node, e, m);
 	if (node instanceof AST.Variable) {
 		if (node.idx === m) return e;
 		return new AST.Variable(node.name, node.idx);
