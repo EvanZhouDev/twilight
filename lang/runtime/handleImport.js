@@ -9,7 +9,7 @@ const importFile = ({
 	env = {
 		static: {},
 		dynamic: {},
-		reverse: {},
+		varLookup: {},
 	},
 	importHistory,
 }) => {
@@ -44,15 +44,15 @@ const importFile = ({
 			env.static = { ...env.static, ...stdlib.static[importPath] };
 
 			for (const key in stdlib.static[importPath]) {
-				if (!env.reverse[deBrujinFlatten(stdlib.static[importPath][key])]) {
-					env.reverse[deBrujinFlatten(stdlib.static[importPath][key])] = [];
+				if (!env.varLookup[deBrujinFlatten(stdlib.static[importPath][key])]) {
+					env.varLookup[deBrujinFlatten(stdlib.static[importPath][key])] = [];
 				}
 				if (
-					!env.reverse[
+					!env.varLookup[
 						deBrujinFlatten(stdlib.static[importPath][key])
 					].includes(key)
 				) {
-					env.reverse[deBrujinFlatten(stdlib.static[importPath][key])].push(
+					env.varLookup[deBrujinFlatten(stdlib.static[importPath][key])].push(
 						key,
 					);
 				}

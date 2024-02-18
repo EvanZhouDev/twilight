@@ -6,7 +6,7 @@ export default (
 	env = {
 		static: {},
 		dynamic: {},
-		reverse: {},
+		varLookup: {},
 	},
 ) => {
 	const lexer = new Lexer(line);

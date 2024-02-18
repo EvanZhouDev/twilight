@@ -12,7 +12,7 @@ const run = ({
 	env = {
 		static: {},
 		dynamic: {},
-		reverse: {}
+		varLookup: {}
 	},
 	importHistory = [],
 }) => {
@@ -48,11 +48,10 @@ const run = ({
 
 		if (line instanceof AST.Assignment) {
 			assign(env, line.name, line.expr);
-			// console.log(print(line, env.reverse));
 		}
 
 		if (line instanceof AST.Abstraction || line instanceof AST.Application) {
-			console.log(print(simplify(line), env.reverse));
+			console.log(print(simplify(line), env.varLookup));
 		}
 	}
 

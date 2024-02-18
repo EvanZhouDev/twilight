@@ -11,7 +11,7 @@ import assign from "lang/runtime/assign";
 const env = {
 	static: {},
 	dynamic: {},
-	reverse: {},
+	varLookup: {},
 };
 
 console.log("Twilight REPL v0.1");
@@ -37,11 +37,11 @@ rl.on("line", (input) => {
 
 		if (line instanceof AST.Assignment) {
 			assign(env, line.name, line.expr);
-			console.log(print(line, env.reverse));
+			console.log(print(line, env.varLookup));
 		}
 
 		if (line instanceof AST.Abstraction || line instanceof AST.Application) {
-			console.log(print(simplify(line), env.reverse));
+			console.log(print(simplify(line), env.varLookup));
 		}
 	}
 	rl.prompt();
