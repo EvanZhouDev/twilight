@@ -2,16 +2,28 @@
 	"name": "twilight-lang",
 	"module": "index.js",
 	"type": "module",
+	"version": "0.1.0",
+	"author": "EvanZhouDev",
+	"license": "GPL-3.0",
+	"description": "Twilight is a modern lambda calculus runtime and REPL.",
 	"devDependencies": {
 		"@biomejs/biome": "^1.5.3",
 		"vitest": "^1.2.2"
 	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/EvanZhouDev/twilight.git"
+	},
+	"homepage": "https://github.com/EvanZhouDev/twilight",
+	"keywords": [
+		"lambda",
+		"calculus"
+	],
 	"scripts": {
 		"format": "biome format . --write",
 		"lint": "biome lint .",
 		"fix": "biome check --apply .",
 		"fix-unsafe": "biome check --apply-unsafe .",
-		"test": "vitest",
 		"build": "bun build ./index.js --compile --outfile ./bin/twilight"
 	},
 	"dependencies": {
