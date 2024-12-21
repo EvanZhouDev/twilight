@@ -11,9 +11,9 @@ export default class Token {
 	static readonly EQUALS: TokenType = "=";
 
 	public readonly type: TokenType;
-	public value: any;
+	public value: string;
 
-	constructor(type: TokenType, value?: any) {
+	constructor(type: TokenType, value?: string) {
 		this.type = type;
 		this.value = value;
 	}
