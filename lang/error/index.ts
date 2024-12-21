@@ -11,7 +11,6 @@ export class LanguageError extends Error {
 		return `${chalk.redBright("×")} ${this.message}`;
 	}
 }
-
 export class FilePreviewError extends LanguageError {
 	public text: string;
 	public position: number;
@@ -192,7 +191,6 @@ export class UnboundVariableError extends FilePreviewError {
 		});
 	}
 }
-
 export class IllegalImportError extends FilePreviewError {
 	constructor({ parser }: { parser: Parser }) {
 		super({

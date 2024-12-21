@@ -23,8 +23,8 @@ export class DefaultFormatter implements Formatter {
 	}
 
 	application(leftExpr: Expression, rightExpr: Expression) {
-		let left = leftExpr.toString(this);
-		let right = rightExpr.toString(this);
+		const left = leftExpr.toString(this);
+		const right = rightExpr.toString(this);
 
 		switch (leftExpr.constructor) {
 			// Applications are leftward binding, so if they occur as the left expression, they do not need parenthesis around the left expression
