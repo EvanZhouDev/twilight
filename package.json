@@ -27,6 +27,7 @@
 		"build": "bun build ./index.js --compile --outfile ./bin/twilight"
 	},
 	"dependencies": {
+		"@types/node": "^22.10.2",
 		"chalk": "^5.4.0",
 		"fast-levenshtein": "^3.0.0"
 	},
