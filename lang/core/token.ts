@@ -13,7 +13,7 @@ export default class Token {
 	public readonly type: TokenType;
 	public value: any;
 
-	constructor(type: TokenType, value: any) {
+	constructor(type: TokenType, value?: any) {
 		this.type = type;
 		this.value = value;
 	}
