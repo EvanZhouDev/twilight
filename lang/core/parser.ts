@@ -152,9 +152,8 @@ export default class Parser {
 	application(context: string[] = []) {
 		let expression = this.atom([...context]);
 		while (
-			this.lookahead.type === Token.VAR ||
-			this.lookahead.type === Token.LPAREN ||
-			this.lookahead.type === Token.LAMBDA
+			this.lookahead.type !== Token.EOF &&
+			this.lookahead.type !== Token.EOL
 		) {
 			if (this.lookahead.type === Token.LAMBDA) {
 				expression = new AST.Application(
