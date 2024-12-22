@@ -58,6 +58,7 @@ export default () => {
 					libraries,
 					formatter: new TwilightFormatter(),
 					lineNumber: 1,
+					onOutput: () => {},
 				});
 				if (output) console.log(output);
 			}
