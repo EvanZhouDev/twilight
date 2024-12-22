@@ -1,14 +1,24 @@
 import chalk from "chalk";
 import type Parser from "lang/core/parser";
 import Token, { type TokenType } from "lang/core/token";
+import type { Library } from "lang/libs/stdlib";
 import * as path from "node:path";
 import findBestMatch from "util/findBestMatch";
 
 export class LanguageError extends Error {
 	public message: string;
+	public hint: string;
+
+	constructor(message: string, hint?: string) {
+		super();
+		this.message = message;
+		this.hint = hint;
+	}
 
 	toString(): string {
-		return `${chalk.redBright("×")} ${this.message}`;
+		return `${chalk.redBright("×")} ${this.message}${
+			this.hint ? chalk.grey.italic(`\n  ${this.hint}`) : ""
+		}`;
 	}
 }
 export class FilePreviewError extends LanguageError {
@@ -21,17 +31,20 @@ export class FilePreviewError extends LanguageError {
 
 	constructor({
 		message,
+		hint,
 		highlightLength = 1,
 		highlightOffset = 0,
 		parser,
 	}: {
 		message: string;
 		parser: Parser;
+		hint?: string;
 		highlightLength?: number;
 		highlightOffset?: number;
 	}) {
 		super(message);
 		this.message = message;
+		this.hint = hint;
 
 		this.text = parser.lexer.rawInput;
 		this.position = parser.lexer.pos;
@@ -81,16 +94,13 @@ ${" ".repeat(String(lineNumber).length)} ╰${`${"─".repeat(startIdx)}${chalk
 				)
 			)}`;
 		};
-
-		// TODO: Make correction for removed lines during parsing such as comments and blank lines
-
 		return `${chalk.redBright("×")} ${this.message}\n${generateFilePreview({
 			line: this.text,
 			startIdx: this.position + this.highlightOffset,
 			endIdx: this.position + this.highlightLength - 1 + this.highlightOffset,
 			lineNumber: this.lineNumber,
 			importHistory: this.importHistory,
-		})}`;
+		})}${this.hint ? chalk.grey.italic(`\n  ${this.hint}`) : ""}`;
 	}
 }
 
@@ -178,14 +188,19 @@ export class UnboundVariableError extends FilePreviewError {
 	}) {
 		const possibleTerm = findBestMatch(name, boundVariables);
 		super({
-			message: chalk.red(
-				`Unbound variable "${chalk.white(name)}". ${
-					possibleTerm !== null
-						? `Did you mean: "${chalk.white(possibleTerm)}"?`
-						: "Try assigning it to a value, then using it."
-				} `
-			),
-			highlightOffset: -name.length + 1,
+			message: chalk.red(`Unbound variable ${chalk.white(name)}.`),
+			hint:
+				possibleTerm !== null
+					? `Did you mean: ${chalk.white(possibleTerm)}?`
+					: "Try assigning it to a value, then using it.",
+			highlightOffset:
+				-name.length +
+				(parser.lookahead.type === Token.EOF ||
+				parser.lookahead.type === Token.EOL
+					? 1
+					: -parser.lexer.rawInput
+							.slice(0, parser.lexer.pos - 1)
+							.match(/\s*$/)[0].length),
 			highlightLength: name.length,
 			parser,
 		});
@@ -203,5 +218,112 @@ export class IllegalImportError extends FilePreviewError {
 			highlightLength: 6,
 			parser,
 		});
+	}
+}
+
+export class NonexistentImportError extends LanguageError {
+	constructor({
+		importName,
+		importHistory,
+		libraries,
+	}: {
+		importName: string;
+		importHistory: string[];
+		libraries: Library[];
+	}) {
+		const fileImported =
+			path.basename(importHistory.at(-1)) !== "."
+				? path.basename(importHistory.at(-1))
+				: "Twilight REPL";
+		const mostSimilarLibrary = findBestMatch(
+			importName,
+			libraries.flatMap((x) => Object.keys(x))
+		);
+		super(
+			chalk.red(
+				`${chalk.white(importName)} imported from ${chalk.white(
+					fileImported
+				)} is not in available libraries.\n${
+					mostSimilarLibrary !== null
+						? chalk.gray.italic(
+								`  Did you mean to import: ${chalk.white(mostSimilarLibrary)}?`
+						  )
+						: chalk.gray.italic(
+								"  If you are attempting to import a file, ensure that it ends in .twi"
+						  )
+				}`
+			)
+		);
+	}
+}
+
+export class NonexistentFileError extends LanguageError {
+	constructor({ fileName }: { fileName: string }) {
+		super(chalk.red(`File ${chalk.white(fileName)} does not exist.`));
+	}
+}
+
+export class NonexistentImportedFileError extends LanguageError {
+	constructor({
+		importName,
+		importHistory,
+	}: {
+		importName: string;
+		importHistory: string[];
+	}) {
+		const fileImported =
+			path.basename(importHistory.at(-1)) !== "."
+				? path.basename(importHistory.at(-1))
+				: "Twilight REPL";
+
+		super(
+			chalk.red(
+				`File ${chalk.white(importName)} imported from ${chalk.white(
+					fileImported
+				)} does not exist.`
+			)
+		);
+	}
+}
+
+export class NonexistentReplCommandError extends LanguageError {
+	constructor({ command }: { command: string }) {
+		super(
+			chalk.red(
+				`REPL command ${chalk.white(
+					`.${command}`
+				)} does not exist. Try running ${chalk.white(
+					".help"
+				)} for available commands.`
+			)
+		);
+	}
+}
+
+export class CyclicalImportError extends LanguageError {
+	constructor({
+		importPath,
+		importHistory,
+	}: {
+		importPath: string;
+		importHistory: string[];
+	}) {
+		super(
+			chalk.red(
+				`Cyclical import detected. You are importing ${chalk.white(
+					path.basename(importPath)
+				)} from ${chalk.white(
+					path.basename(importHistory.at(-1))
+				)}, but it has already been imported from ${chalk.white(
+					path.basename(
+						importHistory[importHistory.indexOf(importPath) - 1]
+					) === "."
+						? "Twilight REPL"
+						: path.basename(
+								importHistory[importHistory.indexOf(importPath) - 1]
+						  )
+				)}`
+			)
+		);
 	}
 }
