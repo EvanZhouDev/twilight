@@ -6,9 +6,31 @@ import { TwilightFormatter } from "../../lang/formatter";
 import * as readline from "node:readline";
 import chalk from "chalk";
 
+export const replCommands = {
+	clear: () => {
+		console.clear();
+	},
+	help: () => {
+		console.log(`${chalk.bold.magenta("Twilight REPL v0.1")}
+${chalk.white("Commands")}:
+.help     Show this help message
+.exit     Leave the REPL (Ctrl+C)
+.clear    Clear the screen
+.env      Print the current environment`);
+	},
+	exit: () => {
+		console.log();
+		process.exit(0);
+	},
+	env: (env: Environment) => {
+		console.log(env);
+	},
+};
+
 export default () => {
 	const env = new Environment();
 	const libraries = [stdlib];
+	const importHistory = [`${process.cwd()}/.`];
 
 	console.log(
 		`Twilight REPL v${require("../../package.json")
@@ -24,39 +46,15 @@ export default () => {
 
 	rl.setPrompt("> ");
 
-	const replCommands = {
-		clear: () => {
-			console.clear();
-		},
-		help: () => {
-			console.log(`${chalk.bold.magenta("Twilight REPL v0.1")}
-	${chalk.white("Commands")}:
-	.help     Show this help message
-	.exit     Leave the REPL (Ctrl+C)
-	.clear    Clear the screen`);
-		},
-		exit: () => {
-			console.log();
-			process.exit(0);
-		},
-	};
-
 	rl.on("line", (input) => {
 		try {
 			if (input[0] === ".") {
 				if (replCommands[input.slice(1)]) {
-					replCommands[input.slice(1)]();
+					replCommands[input.slice(1)](env);
 				} else {
 					throw new NonexistentReplCommandError({ command: input.slice(1) });
 				}
 			} else {
-				if (Object.keys(replCommands).includes(input)) {
-					console.log(
-						chalk.grey.italic('Did you mean to run the REPL Command: "') +
-							chalk.white(`.${input}`) +
-							chalk.grey.italic('"?\n')
-					);
-				}
 				const output = runLine({
 					source: input,
 					env,

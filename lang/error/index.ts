@@ -4,6 +4,7 @@ import Token, { type TokenType } from "lang/core/token";
 import type { Library } from "lang/libs";
 import * as path from "node:path";
 import findBestMatch from "util/findBestMatch";
+import { replCommands } from "cli/repl";
 
 export class LanguageError extends Error {
 	public message: string;
@@ -198,7 +199,13 @@ export class UnboundVariableError extends FilePreviewError {
 		super({
 			message: chalk.red(`Unbound variable ${chalk.white(name)}`),
 			hint:
-				possibleTerm !== null
+				// if in repl
+				parser.importHistory === undefined &&
+				Object.keys(replCommands).includes(name)
+					? `Did you mean to run the REPL Command: "${chalk.white(
+							`.${name}`
+					  )}"?`
+					: possibleTerm !== null
 					? `Did you mean: ${chalk.white(possibleTerm)}?`
 					: "Try assigning it to a value, then using it.",
 			highlightOffset:
