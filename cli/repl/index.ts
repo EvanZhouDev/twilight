@@ -5,6 +5,7 @@ import { runLine } from "../../lang/runtime/run";
 import { TwilightFormatter } from "../../lang/formatter";
 import * as readline from "node:readline";
 import chalk from "chalk";
+import type { Library } from "lang/libs";
 
 export const replCommands = {
 	clear: () => {
@@ -22,15 +23,59 @@ ${chalk.white("Commands")}:
 		console.log();
 		process.exit(0);
 	},
-	env: (env: Environment) => {
-		console.log(env);
+	env: (env: Environment, libraries: Library[]) => {
+		if (
+			Object.keys(env.static).length === 0 &&
+			env.includedModules.length === 0
+		) {
+			console.log(`${chalk.white("Empty environment")}`);
+			return;
+		}
+
+		if (Object.keys(env.static).length > 0) {
+			console.log(
+				`${chalk.white("Variables")} ${chalk.grey(
+					`(${Object.keys(env.static).length} vars)`
+				)}:`
+			);
+			for (const [key, value] of Object.entries(env.static)) {
+				console.log(
+					`  - ${chalk.white(key)}: ${value.toString(new TwilightFormatter())}`
+				);
+			}
+
+			if (env.includedModules.length > 0) console.log();
+		}
+
+		if (env.includedModules.length > 0) {
+			console.log(
+				`${chalk.white("Modules")} ${chalk.grey(
+					`(${Object.keys(env.includedModules).length} imported)`
+				)}:`
+			);
+
+			let allModules = {};
+
+			for (const library of libraries) {
+				allModules = { ...allModules, ...library };
+			}
+
+			for (const module of env.includedModules) {
+				console.log(
+					`  - ${chalk.white(module)} ${chalk.gray(
+						`(${Object.keys(allModules[module].static || {}).length} static, ${
+							Object.keys(allModules[module].dynamic || {}).length
+						} dynamic, ${(allModules[module].patterns || []).length} patterns)`
+					)}`
+				);
+			}
+		}
 	},
 };
 
 export default () => {
 	const env = new Environment();
 	const libraries = [stdlib];
-	const importHistory = [`${process.cwd()}/.`];
 
 	console.log(
 		`Twilight REPL v${require("../../package.json")
@@ -50,7 +95,7 @@ export default () => {
 		try {
 			if (input[0] === ".") {
 				if (replCommands[input.slice(1)]) {
-					replCommands[input.slice(1)](env);
+					replCommands[input.slice(1)](env, libraries);
 				} else {
 					throw new NonexistentReplCommandError({ command: input.slice(1) });
 				}
