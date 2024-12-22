@@ -1,5 +1,5 @@
 import type { Expression } from "lang/core/ast";
-import type { Module } from "lang/libs/stdlib";
+import type { Module } from "lang/libs";
 import { DeBruijnFormatter } from "lang/formatter";
 export class Environment {
 	public static: { [key: string]: Expression };
@@ -9,12 +9,14 @@ export class Environment {
 		match: boolean;
 		value?: string;
 	})[];
+	public includedLibraries: string[];
 
 	constructor() {
 		this.static = {};
 		this.dynamic = {};
 		this.varLookup = {};
 		this.patterns = [];
+		this.includedLibraries = [];
 	}
 
 	addStatic(name: string, expr: Expression): Environment {
@@ -42,6 +44,13 @@ export class Environment {
 		this.dynamic = { ...this.dynamic, ...env.dynamic };
 		if (env.patterns) {
 			this.patterns = [...this.patterns, ...env.patterns];
+		}
+
+		if (env instanceof Environment) {
+			this.includedLibraries = [
+				...this.includedLibraries,
+				...env.includedLibraries,
+			];
 		}
 
 		return this;

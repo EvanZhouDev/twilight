@@ -62,6 +62,7 @@ export default ({
 		if (lib[location]) {
 			env.merge(lib[location]);
 			included = lib[location];
+			env.includedLibraries.push(location);
 			return lib[location];
 		}
 	}

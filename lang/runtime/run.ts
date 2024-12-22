@@ -71,34 +71,45 @@ export const runLine = ({
 	if (source.split(" ")[0] === "import") {
 		let output = "";
 		for (const importString of source.split(" ").slice(1)) {
-			const envChange = importEnv({
-				location: importString,
-				env,
-				libraries,
-				// If for some reason importHistory was not populated, it would pull from the directory in which run was called. However, this shouldn't occur.
-				importHistory: importHistory?.length
-					? importHistory
-					: [`${process.cwd()}/.`],
-				onOutput,
-			});
-			if (importString.endsWith(".twi")) {
-				output += `${chalk.greenBright(
-					"✔︎ Successfully imported"
-				)} ${chalk.white(importString)}\n`;
+			if (
+				!importString.endsWith(".twi") &&
+				env.includedLibraries.includes(importString)
+			) {
+				output += `${chalk.greenBright("✔︎")} ${chalk.white(
+					importString
+				)} ${chalk.greenBright("is already included.")}\n`;
 			} else {
-				output += `${chalk.greenBright(
-					"✔︎ Successfully imported"
-				)} ${chalk.white(importString)} ${chalk.gray(
-					`(${Object.keys(envChange.static || {}).length} static, ${
-						Object.keys(envChange.dynamic || {}).length
-					} dynamic, ${(envChange.patterns || []).length} patterns)`
-				)}${
-					envChange.static
-						? `\n  ${chalk.grey.italic("Added")} ${Object.keys(envChange.static)
-								.map((x) => chalk.white.italic(x))
-								.join(", ")}\n`
-						: ""
-				}`;
+				const envChange = importEnv({
+					location: importString,
+					env,
+					libraries,
+					// If for some reason importHistory was not populated, it would pull from the directory in which run was called. However, this shouldn't occur.
+					importHistory: importHistory?.length
+						? importHistory
+						: [`${process.cwd()}/.`],
+					onOutput,
+				});
+				if (importString.endsWith(".twi")) {
+					output += `${chalk.greenBright(
+						"✔︎ Successfully imported"
+					)} ${chalk.white(importString)}\n`;
+				} else {
+					output += `${chalk.greenBright(
+						"✔︎ Successfully imported"
+					)} ${chalk.white(importString)} ${chalk.gray(
+						`(${Object.keys(envChange.static || {}).length} static, ${
+							Object.keys(envChange.dynamic || {}).length
+						} dynamic, ${(envChange.patterns || []).length} patterns)`
+					)}${
+						envChange.static
+							? `\n  ${chalk.grey.italic("Added")} ${Object.keys(
+									envChange.static
+							  )
+									.map((x) => chalk.white.italic(x))
+									.join(", ")}`
+							: ""
+					}\n`;
+				}
 			}
 		}
 		return output.trim();
