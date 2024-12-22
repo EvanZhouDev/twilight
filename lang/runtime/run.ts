@@ -58,6 +58,7 @@ export const runLine = ({
 	libraries = [stdlib],
 	formatter = new DefaultFormatter(),
 	lineNumber = 1,
+	onOutput = (out: string) => console.log(out),
 }: {
 	source: string;
 	importHistory?: string[];
@@ -65,6 +66,7 @@ export const runLine = ({
 	libraries?: Library[];
 	formatter?: Formatter;
 	lineNumber?: number;
+	onOutput?: (out: string) => void;
 }) => {
 	if (source.split(" ")[0] === "import") {
 		let output = "";
@@ -74,13 +76,10 @@ export const runLine = ({
 				env,
 				libraries,
 				// If for some reason importHistory was not populated, it would pull from the directory in which run was called. However, this shouldn't occur.
-
-				// v1 code:
-				// importHistory: importHistory.length
-				// 	? importHistory
-				// 	: [`${__dirname}/.`],
-				// TODO: IS THIS CORRECT? Different from v1 code
-				importHistory: importHistory ? importHistory : [`${__dirname}/.`],
+				importHistory: importHistory?.length
+					? importHistory
+					: [`${__dirname}/.`],
+				onOutput,
 			});
 			if (importString.endsWith(".twi")) {
 				output += `${chalk.greenBright(
@@ -142,6 +141,7 @@ export const run = ({
 					libraries,
 					env,
 					lineNumber,
+					onOutput: () => {},
 				})
 			);
 		}

@@ -16,11 +16,13 @@ export default ({
 	env = new Environment(),
 	libraries = [stdlib],
 	importHistory,
+	onOutput = console.log,
 }: {
 	location: string;
 	importHistory: string[];
 	env?: Environment;
 	libraries?: Library[];
+	onOutput?: (output: string) => void;
 }): Module => {
 	if (location.split(".").at(-1) === "twi") {
 		// If the location is another Twilight file
@@ -45,6 +47,7 @@ export default ({
 			importHistory: [...importHistory, filePath],
 			formatter: new TwilightFormatter(),
 			libraries: [stdlib],
+			onOutput,
 		});
 		env.merge(tempEnv);
 		return {
