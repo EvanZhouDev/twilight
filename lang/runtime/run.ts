@@ -78,7 +78,7 @@ export const runLine = ({
 				// If for some reason importHistory was not populated, it would pull from the directory in which run was called. However, this shouldn't occur.
 				importHistory: importHistory?.length
 					? importHistory
-					: [`${__dirname}/.`],
+					: [`${process.cwd()}/.`],
 				onOutput,
 			});
 			if (importString.endsWith(".twi")) {
