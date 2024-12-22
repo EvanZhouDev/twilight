@@ -10,7 +10,12 @@ export default () => {
 	const env = new Environment();
 	const libraries = [stdlib];
 
-	console.log(`Twilight REPL v${require("../../package.json").version}`);
+	console.log(
+		`Twilight REPL v${require("../../package.json")
+			.version.split(".")
+			.slice(0, 2)
+			.join(".")}`
+	);
 
 	const rl = readline.createInterface({
 		input: process.stdin,
