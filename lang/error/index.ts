@@ -76,6 +76,15 @@ export class FilePreviewError extends LanguageError {
 			const mainText = commentIndex === -1 ? line : line.slice(0, commentIndex);
 			const commentText = commentIndex === -1 ? "" : line.slice(commentIndex);
 
+			const totalLength = Math.max(
+				fileLocation.length +
+					1 +
+					String(lineNumber).length +
+					1 +
+					String(startIdx).length,
+				line.length
+			);
+
 			return `${" ".repeat(
 				String(lineNumber).length
 			)} ╭─${chalk.bold.blueBright(fileLocation)}:${lineNumber}:${startIdx}
@@ -83,15 +92,7 @@ ${chalk.gray(lineNumber)} │ ${mainText}${chalk.gray(commentText)}
 ${" ".repeat(String(lineNumber).length)} ╰${`${"─".repeat(startIdx)}${chalk
 				.magentaBright("^")
 				.repeat(endIdx - startIdx + 1)}`}${"─".repeat(
-				Math.max(
-					fileLocation.length +
-						1 +
-						String(lineNumber).length +
-						1 +
-						String(startIdx).length -
-						endIdx,
-					0
-				)
+				Math.max(totalLength - endIdx, 0)
 			)}`;
 		};
 		return `${chalk.redBright("×")} ${this.message}\n${generateFilePreview({
@@ -188,7 +189,7 @@ export class UnboundVariableError extends FilePreviewError {
 	}) {
 		const possibleTerm = findBestMatch(name, boundVariables);
 		super({
-			message: chalk.red(`Unbound variable ${chalk.white(name)}.`),
+			message: chalk.red(`Unbound variable ${chalk.white(name)}`),
 			hint:
 				possibleTerm !== null
 					? `Did you mean: ${chalk.white(possibleTerm)}?`
