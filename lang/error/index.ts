@@ -199,9 +199,13 @@ export class UnboundVariableError extends FilePreviewError {
 		super({
 			message: chalk.red(`Unbound variable ${chalk.white(name)}`),
 			hint:
-				// if in repl
-				parser.importHistory === undefined &&
-				Object.keys(replCommands).includes(name)
+				possibleTerm !== null &&
+				possibleTerm.length === 1 &&
+				name.includes(possibleTerm)
+					? "If you're applying two variables, use a space between them."
+					: // if in repl
+					parser.importHistory === undefined &&
+					  Object.keys(replCommands).includes(name)
 					? `Did you mean to run the REPL Command: "${chalk.white(
 							`.${name}`
 					  )}"?`
