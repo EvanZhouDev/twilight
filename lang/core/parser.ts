@@ -153,9 +153,17 @@ export default class Parser {
 		let expression = this.atom([...context]);
 		while (
 			this.lookahead.type === Token.VAR ||
-			this.lookahead.type === Token.LPAREN
+			this.lookahead.type === Token.LPAREN ||
+			this.lookahead.type === Token.LAMBDA
 		) {
-			expression = new AST.Application(expression, this.atom([...context]));
+			if (this.lookahead.type === Token.LAMBDA) {
+				expression = new AST.Application(
+					expression,
+					this.expression([...context])
+				);
+			} else {
+				expression = new AST.Application(expression, this.atom([...context]));
+			}
 		}
 		return expression;
 	}
