@@ -214,8 +214,14 @@ export class UnboundVariableError extends FilePreviewError {
 				parser.lookahead.type === Token.EOL
 					? 1
 					: -parser.lexer.rawInput
-							.slice(0, parser.lexer.pos - 1)
-							.match(/\s*$/)[0].length),
+							.slice(
+								0,
+								parser.lexer.pos -
+									1 -
+									(parser.lookahead.value ? parser.lookahead.value.length : 0)
+							)
+							.match(/\s*$/)[0].length -
+					  (parser.lookahead.value ? parser.lookahead.value.length : 0)),
 			highlightLength: name.length,
 			parser,
 		});
@@ -225,10 +231,9 @@ export class IllegalImportError extends FilePreviewError {
 	constructor({ parser }: { parser: Parser }) {
 		super({
 			message: chalk.red(
-				`"${chalk.white(
-					"import"
-				)}" cannot be used as a variable. If you are attempting to import something, put it at the top of the file.`
+				`Reserved keyword ${chalk.white("import")} cannot be used as a binder.`
 			),
+			hint: "To import something, put it at the start of the line.",
 			highlightOffset: -5,
 			highlightLength: 6,
 			parser,
