@@ -9,14 +9,14 @@ export class Environment {
 		match: boolean;
 		value?: string;
 	})[];
-	public includedLibraries: string[];
+	public includedModules: string[];
 
 	constructor() {
 		this.static = {};
 		this.dynamic = {};
 		this.varLookup = {};
 		this.patterns = [];
-		this.includedLibraries = [];
+		this.includedModules = [];
 	}
 
 	addStatic(name: string, expr: Expression): Environment {
@@ -47,9 +47,9 @@ export class Environment {
 		}
 
 		if (env instanceof Environment) {
-			this.includedLibraries = [
-				...this.includedLibraries,
-				...env.includedLibraries,
+			this.includedModules = [
+				...this.includedModules,
+				...env.includedModules,
 			];
 		}
 

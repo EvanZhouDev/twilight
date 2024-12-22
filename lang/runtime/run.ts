@@ -73,11 +73,11 @@ export const runLine = ({
 		for (const importString of source.split(" ").slice(1)) {
 			if (
 				!importString.endsWith(".twi") &&
-				env.includedLibraries.includes(importString)
+				env.includedModules.includes(importString)
 			) {
 				output += `${chalk.greenBright("✔︎")} ${chalk.white(
 					importString
-				)} ${chalk.greenBright("is already included.")}\n`;
+				)} ${chalk.greenBright("is already imported.")}\n`;
 			} else {
 				const envChange = importEnv({
 					location: importString,
