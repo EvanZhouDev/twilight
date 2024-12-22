@@ -7,12 +7,17 @@ import * as readline from "node:readline";
 import chalk from "chalk";
 import type { Library } from "lang/libs";
 
+const version = require("../../package.json")
+	.version.split(".")
+	.slice(0, 2)
+	.join(".");
+
 export const replCommands = {
 	clear: () => {
 		console.clear();
 	},
 	help: () => {
-		console.log(`${chalk.bold.magenta("Twilight REPL v0.1")}
+		console.log(`${chalk.bold.magenta(`Twilight REPL v${version}`)}
 ${chalk.white("Commands")}:
 .help     Show this help message
 .exit     Leave the REPL (Ctrl+C)
@@ -28,7 +33,7 @@ ${chalk.white("Commands")}:
 			Object.keys(env.static).length === 0 &&
 			env.includedModules.length === 0
 		) {
-			console.log(`${chalk.white("Empty environment")}`);
+			console.log(`${chalk.white("Empty environment.")}`);
 			return;
 		}
 
@@ -77,12 +82,7 @@ export default () => {
 	const env = new Environment();
 	const libraries = [stdlib];
 
-	console.log(
-		`Twilight REPL v${require("../../package.json")
-			.version.split(".")
-			.slice(0, 2)
-			.join(".")}`
-	);
+	console.log(`Twilight REPL v${version}`);
 
 	const rl = readline.createInterface({
 		input: process.stdin,
