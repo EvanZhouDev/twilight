@@ -24,7 +24,7 @@
 		"lint": "biome lint .",
 		"fix": "biome check --apply .",
 		"fix-unsafe": "biome check --apply-unsafe .",
-		"build": "bun build ./index.js --compile --outfile ./bin/twilight"
+		"build": "bun build ./cli/index.ts --compile --outfile ./bin/twilight"
 	},
 	"dependencies": {
 		"@types/node": "^22.10.2",
