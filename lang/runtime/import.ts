@@ -39,22 +39,15 @@ export default ({
 			throw new CyclicalImportError({ importPath: filePath, importHistory });
 		}
 
-		const tempEnv: Environment = new Environment();
-
 		run({
 			source: fs.readFileSync(filePath, "utf-8"),
-			env: tempEnv,
+			env,
 			importHistory: [...importHistory, filePath],
 			formatter: new TwilightFormatter(),
 			libraries: [stdlib],
 			onOutput,
 		});
-		env.merge(tempEnv);
-		return {
-			static: tempEnv.static,
-			patterns: tempEnv.patterns,
-			dynamic: tempEnv.dynamic,
-		};
+		return env;
 	}
 
 	let included: Module;
