@@ -51,7 +51,6 @@ export class FilePreviewError extends LanguageError {
 		this.position = parser.lexer.pos;
 		this.highlightLength = highlightLength;
 		this.importHistory = parser.importHistory;
-		console.log(highlightOffset, this.position);
 		this.highlightOffset = highlightOffset + this.text.match(/^\s*/)[0].length;
 		this.lineNumber = parser.lineNumber;
 	}
