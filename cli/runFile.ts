@@ -3,7 +3,7 @@ import { TwilightFormatter } from "lang/formatter";
 import { runLine } from "lang/runtime/run";
 import stdlib from "lang/libs/stdlib";
 import { LanguageError, NonexistentFileError } from "lang/error";
-import type { Library } from "lang/libs/stdlib";
+import type { Library } from "lang/libs";
 import { Environment } from "lang/runtime/env";
 import { run } from "lang/runtime/run";
 

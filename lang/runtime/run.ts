@@ -11,7 +11,8 @@ import {
 	type Expression,
 } from "lang/core/ast";
 import simplify from "./simplify";
-import stdlib, { type Library } from "lang/libs/stdlib";
+import stdlib from "lang/libs/stdlib";
+import type { Library } from "lang/libs";
 import Lexer from "lang/core/lexer";
 import Parser from "lang/core/parser";
 import importEnv from "lang/runtime/import";

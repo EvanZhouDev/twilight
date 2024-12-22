@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import type Parser from "lang/core/parser";
 import Token, { type TokenType } from "lang/core/token";
-import type { Library } from "lang/libs/stdlib";
+import type { Library } from "lang/libs";
 import * as path from "node:path";
 import findBestMatch from "util/findBestMatch";
 

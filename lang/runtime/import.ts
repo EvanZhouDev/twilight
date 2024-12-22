@@ -1,4 +1,5 @@
-import stdlib, { type Library } from "lang/libs/stdlib";
+import stdlib from "lang/libs/stdlib";
+import type { Library, Module } from "lang/libs";
 import { Environment } from "./env";
 import * as path from "node:path";
 import * as fs from "node:fs";
@@ -9,7 +10,6 @@ import {
 } from "lang/error";
 import { TwilightFormatter } from "lang/formatter";
 import { run } from "lang/runtime/run";
-import type { Module } from "lang/libs/stdlib";
 
 export default ({
 	location,

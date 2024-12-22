@@ -1,20 +1,5 @@
 import parse from "lang/core";
 import AST, { type Expression } from "lang/core/ast";
-import type { Environment } from "lang/runtime/env";
-
-export interface Module {
-	static?: { [key: string]: Expression };
-	dynamic?: { [key: string]: (input: string) => Expression };
-	varLookup?: { [key: string]: string[] };
-	patterns?: ((expr: Expression) => {
-		match: boolean;
-		value?: string;
-	})[];
-}
-
-export interface Library {
-	[lib: string]: Module;
-}
 
 export default {
 	numerals: {
