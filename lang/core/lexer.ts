@@ -1,9 +1,5 @@
 import Token from "lang/core/token";
-
-const preprocess = (raw: string) => {
-	const source = raw.replaceAll(/\#.*/g, ""); // Remove comments
-	return source.trim();
-};
+import preprocess from "util/preprocess";
 
 export default class Lexer {
 	public input: string;
