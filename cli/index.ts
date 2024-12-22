@@ -20,7 +20,7 @@ ${chalk.yellowBright("--help")}      Print this help message.
 `);
 } else if (args[0] === "--version" || args[0] === "-v") {
 	// TODO: make this directly tap from package.json
-	console.log("v0.1");
+	console.log(require("../package.json").version);
 } else {
 	run(args[0], [stdlib]);
 }
