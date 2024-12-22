@@ -125,6 +125,13 @@ export class UnexpectedTokenError extends FilePreviewError {
 				parser,
 				highlightOffset: 1,
 			});
+		} else if (expected === Token.EOF || expected === Token.EOL) {
+			super({
+				message: chalk.red(
+					`Unexpected token "${chalk.bold(chalk.white(token))}"`
+				),
+				parser,
+			});
 		} else {
 			super({
 				message: chalk.red(

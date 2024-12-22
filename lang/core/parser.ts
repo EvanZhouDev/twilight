@@ -79,7 +79,18 @@ export default class Parser {
 			return this.assignment();
 		}
 
-		return this.expression();
+		const expr = this.expression();
+
+		// Throw if there's an unexpected leftover token
+		if (!this.end() && this.lookahead.type !== Token.EOL) {
+			throw new UnexpectedTokenError({
+				token: this.lookahead.type,
+				expected: Token.EOL,
+				parser: this,
+			});
+		}
+
+		return expr;
 	}
 
 	// Assignment must be a top-level expression, and cannot have a context
@@ -152,8 +163,9 @@ export default class Parser {
 	application(context: string[] = []) {
 		let expression = this.atom([...context]);
 		while (
-			this.lookahead.type !== Token.EOF &&
-			this.lookahead.type !== Token.EOL
+			this.lookahead.type === Token.VAR ||
+			this.lookahead.type === Token.LPAREN ||
+			this.lookahead.type === Token.LAMBDA
 		) {
 			if (this.lookahead.type === Token.LAMBDA) {
 				expression = new AST.Application(
