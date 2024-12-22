@@ -17,6 +17,7 @@ import Lexer from "lang/core/lexer";
 import Parser from "lang/core/parser";
 import importEnv from "lang/runtime/import";
 import chalk from "chalk";
+import preprocess from "util/preprocess";
 
 export const runAST = ({
 	line,
@@ -68,7 +69,10 @@ export const runLine = ({
 	lineNumber?: number;
 	onOutput?: (out: string) => void;
 }) => {
-	if (source.split(" ")[0] === "import") {
+	if (preprocess(source) === "import") {
+		return chalk.white("Nothing to import.");
+	}
+	if (preprocess(source).split(" ")[0] === "import") {
 		let output = "";
 		for (const importString of source.split(" ").slice(1)) {
 			if (
