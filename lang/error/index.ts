@@ -51,7 +51,8 @@ export class FilePreviewError extends LanguageError {
 		this.position = parser.lexer.pos;
 		this.highlightLength = highlightLength;
 		this.importHistory = parser.importHistory;
-		this.highlightOffset = highlightOffset;
+		console.log(highlightOffset, this.position);
+		this.highlightOffset = highlightOffset + this.text.match(/^\s*/)[0].length;
 		this.lineNumber = parser.lineNumber;
 	}
 
@@ -216,7 +217,8 @@ export class UnboundVariableError extends FilePreviewError {
 					: -parser.lexer.rawInput
 							.slice(
 								0,
-								parser.lexer.pos -
+								parser.lexer.pos +
+									parser.lexer.rawInput.match(/^\s*/)[0].length -
 									1 -
 									(parser.lookahead.value ? parser.lookahead.value.length : 0)
 							)
