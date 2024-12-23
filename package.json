@@ -12,7 +12,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/EvanZhouDev/twilight.git"
+		"url": "git+https://github.com/EvanZhouDev/twilight.git"
 	},
 	"homepage": "https://github.com/EvanZhouDev/twilight",
 	"keywords": [
@@ -32,6 +32,6 @@
 		"fast-levenshtein": "^3.0.0"
 	},
 	"bin": {
-		"twilight": "./bin/twilight"
+		"twilight": "bin/twilight"
 	}
 }
