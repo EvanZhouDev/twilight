@@ -25,9 +25,10 @@ Twilight's syntax is heavily math based, so it should seem familiar. Here's a qu
 \x.x # This will get normalized, and printed
 \myVar otherVar.myVar # Variable names can be anything
 
-# Simply seperate expressions with a space...
+# To apply two variables, separate them with a space...
+\x.x x
+# or use parenthesis as such:
 (\x.x)(\y.y) # \y.y
-# or use parenthesis to apply
 (\w y x.y(w y x))(\s z.z) # \s z.z
 
 # You can also store things in constants... they can be named anything!
@@ -35,12 +36,15 @@ T = \x y.x
 F = \x y.y
 ¬ = \x.x F T
 Z = λn.n F ¬ F
-# Use them like normal expressions:
+
+# You can use them as normal expressions
 Z 0 # \x y.x ≣ T
+
 # And Twilight will also identify any constants used in the output!
 ```
 
 You can also call `import` at the **top of the file**, like this:
+
 ```
 import numerals # automatically binds any integers to church numerals
 
@@ -77,6 +81,7 @@ Putting an application on a new line in a Twilight file will result in it being 
 Sometimes, it's effective to store an expression in a constant to use later. In order to do this, simply follow this syntax: `<name> = <expr>`.
 
 For example, let's store the successor function.
+
 ```
 S = λw y x.y (w y x)
 ```
@@ -111,6 +116,7 @@ Here's a quick overview of Twilight's Standard Library packages:
 - `numerals`: Any number is automatically bound to it's Church Numeral equivalent.
 
 For example, I can import and use numerals and booleans like this:
+
 ```
 import numerals booleans
 
