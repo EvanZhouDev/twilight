@@ -14,6 +14,10 @@ npm i -g twilight-lang
 
 Now, verify that it works by running `twilight -v`, which should give you the version number.
 
+### The Math Behind Twilight
+
+Twilight isn't just easy to use. It's also powered by a completely new method of parsing that natively supports multi-binder expressions, allowing a speedup compared to standard methods of parsing. Learn more about [this parsing method here](https://github.com/EvanZhouDev/twilight/tree/main/lang/runtime).
+
 ### Syntax Quickstart
 
 Twilight's syntax is heavily math based, so it should seem familiar. Here's a quick overview of all the features, in the language itself.
